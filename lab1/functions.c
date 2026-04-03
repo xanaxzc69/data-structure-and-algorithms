@@ -9,14 +9,15 @@ double* generateArray(int n) {
     return arr;
 }
 
-double** createMatrix(double *A, int rows) {
-    double **B = malloc(rows * sizeof(double*));
+// Task 1: create matrix
+double** createMatrix(int rows, int cols) {
+    double** matrix = (double**)malloc(rows * sizeof(double*));
+
     for (int i = 0; i < rows; i++) {
-        B[i] = malloc(4 * sizeof(double));
-        for (int j = 0; j < 4; j++)
-            B[i][j] = A[i*4+j];
+        matrix[i] = (double*)malloc(cols * sizeof(double));
     }
-    return B;
+
+    return matrix;
 }
 
 void bubbleSort(double *arr, int n, int asc) {
@@ -30,7 +31,7 @@ void bubbleSort(double *arr, int n, int asc) {
 }
 
 double* maxInColumns(double **B, int rows){
-    double *max = malloc(4*sizeof(double));
+    double *max = malloc(cols * sizeof(double));
     for(int j=0;j<4;j++){
         max[j]=B[0][j];
         for(int i=1;i<rows;i++)
@@ -39,9 +40,25 @@ double* maxInColumns(double **B, int rows){
     return max;
 }
 
-void freeMemory(double *A, double **B, double *max, int rows){
+void freeMemory(double** matrix, int rows, int cols){
     free(A);
     for(int i=0;i<rows;i++) free(B[i]);
     free(B);
     free(max);
+}
+// Task 2: print matrix
+void printMatrix(double** matrix, int rows, int cols) {
+    for (int i = 0; i < rows; i++) {
+        for (int j = 0; j < cols; j++) {
+            printf("%.2f ", matrix[i][j]);
+        }
+        printf("\n");
+    }
+}
+// Task 3: free memory
+void freeMatrix(double** matrix, int rows) {
+    for (int i = 0; i < rows; i++) {
+        free(matrix[i]);
+    }
+    free(matrix);
 }
