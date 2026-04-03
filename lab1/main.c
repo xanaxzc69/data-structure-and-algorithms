@@ -35,7 +35,7 @@ int main(){
                 bubbleSort(B[i], cols, 0);
         }
 
-        double *max = maxInColumns(B, rows);
+        double *max = maxInColumns(matrix, rows, cols);
 
         clock_t end = clock();
         double time_spent = (double)(end - start) / CLOCKS_PER_SEC;
