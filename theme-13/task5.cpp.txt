@@ -1,0 +1,90 @@
+#include <iostream>
+#include <map>
+#include <unordered_map>
+#include <chrono>
+#include <string>
+
+using namespace std;
+using namespace std::chrono;
+
+template <typename Container>
+long long measureInsert(Container& cont, int n) {
+    auto start = high_resolution_clock::now();
+
+    for (int i = 0; i < n; i++) {
+        cont["key" + to_string(i)] = i;
+    }
+
+    auto end = high_resolution_clock::now();
+    return duration_cast<microseconds>(end - start).count();
+}
+
+template <typename Container>
+long long measureDelete(Container& cont, int m) {
+    auto start = high_resolution_clock::now();
+
+    for (int i = 0; i < m; i++) {
+        cont.erase("key" + to_string(i));
+    }
+
+    auto end = high_resolution_clock::now();
+    return duration_cast<microseconds>(end - start).count();
+}
+
+template <typename Container>
+long long measureSearch(Container& cont, int k) {
+    volatile int dummy = 0;
+    auto start = high_resolution_clock::now();
+
+    for (int i = 0; i < k; i++) {
+        auto it = cont.find("key" + to_string(i));
+        if (it != cont.end()) {
+            dummy += 1;
+        }
+    }
+
+    auto end = high_resolution_clock::now();
+    return duration_cast<microseconds>(end - start).count();
+}
+
+int main() {
+    int N, M, K;
+
+    cout << "Enter N (number of elements to insert): ";
+    cin >> N;
+    cout << "Enter M (number of elements to delete): ";
+    cin >> M;
+    cout << "Enter K (number of elements to search): ";
+    cin >> K;
+
+    if (N < 0 || M < 0 || K < 0) {
+        cout << "Values must be non-negative.\n";
+        return 1;
+    }
+
+    map<string, int> orderedMap;
+    unordered_map<string, int> unorderedMap;
+
+    long long mapInsertTime = measureInsert(orderedMap, N);
+    long long unorderedInsertTime = measureInsert(unorderedMap, N);
+
+    long long mapDeleteTime = measureDelete(orderedMap, M);
+    long long unorderedDeleteTime = measureDelete(unorderedMap, M);
+
+    long long mapSearchTime = measureSearch(orderedMap, K);
+    long long unorderedSearchTime = measureSearch(unorderedMap, K);
+
+    cout << "\nPerformance comparison (microseconds):\n";
+
+    cout << "\nstd::map:\n";
+    cout << "Insert: " << mapInsertTime << " us\n";
+    cout << "Delete: " << mapDeleteTime << " us\n";
+    cout << "Search: " << mapSearchTime << " us\n";
+
+    cout << "\nstd::unordered_map:\n";
+    cout << "Insert: " << unorderedInsertTime << " us\n";
+    cout << "Delete: " << unorderedDeleteTime << " us\n";
+    cout << "Search: " << unorderedSearchTime << " us\n";
+
+    return 0;
+}

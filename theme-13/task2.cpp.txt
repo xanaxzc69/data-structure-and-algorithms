@@ -1,0 +1,74 @@
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+void printMenu() {
+    cout << "\nPhone book menu:\n";
+    cout << "1. Add record\n";
+    cout << "2. Find phone by name\n";
+    cout << "3. Delete record\n";
+    cout << "4. Show all records\n";
+    cout << "0. Exit\n";
+    cout << "Choose an option: ";
+}
+
+int main() {
+    map<string, string> phoneBook;
+    int choice;
+
+    do {
+        printMenu();
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 1) {
+            string name, phone;
+            cout << "Enter name: ";
+            getline(cin, name);
+            cout << "Enter phone number: ";
+            getline(cin, phone);
+
+            phoneBook[name] = phone;
+            cout << "Record added successfully.\n";
+        } else if (choice == 2) {
+            string name;
+            cout << "Enter name to search: ";
+            getline(cin, name);
+
+            auto it = phoneBook.find(name);
+            if (it != phoneBook.end()) {
+                cout << "Phone number: " << it->second << endl;
+            } else {
+                cout << "Record not found.\n";
+            }
+        } else if (choice == 3) {
+            string name;
+            cout << "Enter name to delete: ";
+            getline(cin, name);
+
+            if (phoneBook.erase(name)) {
+                cout << "Record deleted successfully.\n";
+            } else {
+                cout << "Record not found.\n";
+            }
+        } else if (choice == 4) {
+            if (phoneBook.empty()) {
+                cout << "Phone book is empty.\n";
+            } else {
+                cout << "\nAll records:\n";
+                for (const auto& pair : phoneBook) {
+                    cout << pair.first << " -> " << pair.second << endl;
+                }
+            }
+        } else if (choice == 0) {
+            cout << "Program finished.\n";
+        } else {
+            cout << "Invalid option.\n";
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
