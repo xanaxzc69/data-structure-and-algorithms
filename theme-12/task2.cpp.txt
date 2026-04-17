@@ -1,0 +1,176 @@
+#include <iostream>
+#include <list>
+#include <string>
+#include <iterator>
+
+using namespace std;
+
+struct Car {
+    string name;
+    int year;
+    int mileage;
+};
+
+void printCar(const Car& car) {
+    cout << "Name: " << car.name
+         << ", Year: " << car.year
+         << ", Mileage: " << car.mileage << " km\n";
+}
+
+void showCars(const list<Car>& cars) {
+    if (cars.empty()) {
+        cout << "The list is empty.\n";
+        return;
+    }
+
+    for (const auto& car : cars) {
+        printCar(car);
+    }
+}
+
+Car inputCar() {
+    Car car;
+    cout << "Enter car name: ";
+    getline(cin, car.name);
+    cout << "Enter year: ";
+    cin >> car.year;
+    cout << "Enter mileage: ";
+    cin >> car.mileage;
+    cin.ignore();
+    return car;
+}
+
+int findPositionByName(const list<Car>& cars, const string& name) {
+    int pos = 1;
+    for (const auto& car : cars) {
+        if (car.name == name) {
+            return pos;
+        }
+        pos++;
+    }
+    return -1;
+}
+
+int main() {
+    list<Car> cars;
+    int choice;
+
+    do {
+        cout << "\n-------- MENU FOR LIST OPERATIONS --------\n";
+        cout << "1. Enter first element into list\n";
+        cout << "2. Insert element at beginning\n";
+        cout << "3. Insert element at end\n";
+        cout << "4. Insert element after given element\n";
+        cout << "5. Insert element before given element\n";
+        cout << "6. Search for required node\n";
+        cout << "7. Delete nodes with year less than given value\n";
+        cout << "8. Show list\n";
+        cout << "9. Exit\n";
+        cout << "Enter operation number: ";
+        cin >> choice;
+        cin.ignore();
+
+        switch (choice) {
+            case 1: {
+                if (!cars.empty()) {
+                    cout << "List already has elements.\n";
+                } else {
+                    Car car = inputCar();
+                    cars.push_back(car);
+                    cout << "First element added.\n";
+                }
+                break;
+            }
+            case 2: {
+                Car car = inputCar();
+                cars.push_front(car);
+                cout << "Element inserted at beginning.\n";
+                break;
+            }
+            case 3: {
+                Car car = inputCar();
+                cars.push_back(car);
+                cout << "Element inserted at end.\n";
+                break;
+            }
+            case 4: {
+                string targetName;
+                cout << "Enter car name after which to insert: ";
+                getline(cin, targetName);
+
+                bool inserted = false;
+                for (auto it = cars.begin(); it != cars.end(); ++it) {
+                    if (it->name == targetName) {
+                        Car car = inputCar();
+                        ++it;
+                        cars.insert(it, car);
+                        inserted = true;
+                        cout << "Element inserted.\n";
+                        break;
+                    }
+                }
+                if (!inserted) {
+                    cout << "Specified car not found.\n";
+                }
+                break;
+            }
+            case 5: {
+                string targetName;
+                cout << "Enter car name before which to insert: ";
+                getline(cin, targetName);
+
+                bool inserted = false;
+                for (auto it = cars.begin(); it != cars.end(); ++it) {
+                    if (it->name == targetName) {
+                        Car car = inputCar();
+                        cars.insert(it, car);
+                        inserted = true;
+                        cout << "Element inserted.\n";
+                        break;
+                    }
+                }
+                if (!inserted) {
+                    cout << "Specified car not found.\n";
+                }
+                break;
+            }
+            case 6: {
+                string name;
+                cout << "Enter car name to search: ";
+                getline(cin, name);
+
+                int position = findPositionByName(cars, name);
+                if (position != -1) {
+                    cout << "Car with name \"" << name << "\" is in the list.\n";
+                } else {
+                    cout << "Car with name \"" << name << "\" is not in the list.\n";
+                }
+                break;
+            }
+            case 7: {
+                int yearLimit;
+                cout << "Enter year value: ";
+                cin >> yearLimit;
+                cin.ignore();
+
+                cars.remove_if([yearLimit](const Car& car) {
+                    return car.year < yearLimit;
+                });
+
+                cout << "Cars with year less than " << yearLimit << " were removed.\n";
+                break;
+            }
+            case 8:
+                showCars(cars);
+                break;
+            case 9:
+                cout << "Program finished.\n";
+                break;
+            default:
+                cout << "Invalid option.\n";
+        }
+
+    } while (choice != 9);
+
+    return 0;
+}
