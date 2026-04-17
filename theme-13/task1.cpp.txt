@@ -1,0 +1,37 @@
+#include <iostream>
+#include <map>
+#include <string>
+#include <cctype>
+
+using namespace std;
+
+string normalizeWord(const string& word) {
+    string result;
+    for (char ch : word) {
+        if (isalpha(static_cast<unsigned char>(ch)) || isdigit(static_cast<unsigned char>(ch))) {
+            result += static_cast<char>(tolower(static_cast<unsigned char>(ch)));
+        }
+    }
+    return result;
+}
+
+int main() {
+    map<string, int> wordCount;
+    string word;
+
+    cout << "Enter text (Ctrl+Z then Enter to finish on Windows):\n";
+
+    while (cin >> word) {
+        string normalized = normalizeWord(word);
+        if (!normalized.empty()) {
+            wordCount[normalized]++;
+        }
+    }
+
+    cout << "\nWord frequencies in alphabetical order:\n";
+    for (const auto& pair : wordCount) {
+        cout << pair.first << " -> " << pair.second << endl;
+    }
+
+    return 0;
+}
