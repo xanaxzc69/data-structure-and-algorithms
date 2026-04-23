@@ -1,0 +1,73 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+struct Student {
+    string name;
+    string group;
+    double avg;
+};
+
+void print(const Student& s) {
+    cout << s.name << " | " << s.group << " | " << s.avg << endl;
+}
+
+int main() {
+    vector<Student> students;
+    int choice;
+
+    do {
+        cout << "\n1 Add\n2 Delete\n3 Sort\n4 Find group\n5 Above avg\n6 Show\n0 Exit\n";
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 1) {
+            Student s;
+            cout << "Name: "; getline(cin, s.name);
+            cout << "Group: "; getline(cin, s.group);
+            cout << "Avg: "; cin >> s.avg;
+            cin.ignore();
+            students.push_back(s);
+        }
+
+        else if (choice == 2) {
+            string name;
+            cout << "Name: "; getline(cin, name);
+
+            students.erase(remove_if(students.begin(), students.end(),
+                [&](Student s){ return s.name == name; }),
+                students.end());
+        }
+
+        else if (choice == 3) {
+            sort(students.begin(), students.end(),
+                [](Student a, Student b){ return a.avg > b.avg; });
+        }
+
+        else if (choice == 4) {
+            string g;
+            cout << "Group: "; getline(cin, g);
+
+            for (auto& s : students)
+                if (s.group == g) print(s);
+        }
+
+        else if (choice == 5) {
+            double limit;
+            cout << "Min avg: "; cin >> limit;
+            cin.ignore();
+
+            for (auto& s : students)
+                if (s.avg > limit) print(s);
+        }
+
+        else if (choice == 6) {
+            for (auto& s : students) print(s);
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}

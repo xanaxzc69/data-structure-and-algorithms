@@ -1,0 +1,78 @@
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+void printMenu() {
+    cout << "\n1. Add product\n";
+    cout << "2. Update quantity\n";
+    cout << "3. Delete product\n";
+    cout << "4. Search product\n";
+    cout << "5. Show all\n";
+    cout << "0. Exit\n";
+}
+
+int main() {
+    map<string, int> warehouse;
+    int choice;
+
+    do {
+        printMenu();
+        cin >> choice;
+        cin.ignore();
+
+        if (choice == 1) {
+            string name;
+            int qty;
+            cout << "Enter name: ";
+            getline(cin, name);
+            cout << "Enter quantity: ";
+            cin >> qty;
+            cin.ignore();
+
+            warehouse[name] += qty;
+        }
+
+        else if (choice == 2) {
+            string name;
+            int qty;
+            cout << "Enter name: ";
+            getline(cin, name);
+            cout << "Enter new quantity: ";
+            cin >> qty;
+            cin.ignore();
+
+            warehouse[name] = qty;
+        }
+
+        else if (choice == 3) {
+            string name;
+            cout << "Enter name: ";
+            getline(cin, name);
+
+            warehouse.erase(name);
+        }
+
+        else if (choice == 4) {
+            string name;
+            cout << "Enter name: ";
+            getline(cin, name);
+
+            if (warehouse.count(name)) {
+                cout << name << " -> " << warehouse[name] << endl;
+            } else {
+                cout << "Not found\n";
+            }
+        }
+
+        else if (choice == 5) {
+            for (auto& p : warehouse) {
+                cout << p.first << " -> " << p.second << endl;
+            }
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
