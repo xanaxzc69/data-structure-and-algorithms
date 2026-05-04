@@ -1,0 +1,83 @@
+#include <iostream>
+#include <vector>
+#include <chrono>
+#include <cstdlib>
+
+using namespace std;
+using namespace chrono;
+
+void bubbleSort(vector<int>& a) {
+    for (int i = 0; i < a.size(); i++)
+        for (int j = 0; j < a.size() - i - 1; j++)
+            if (a[j] > a[j+1])
+                swap(a[j], a[j+1]);
+}
+
+void insertionSort(vector<int>& a) {
+    for (int i = 1; i < a.size(); i++) {
+        int key = a[i], j = i - 1;
+        while (j >= 0 && a[j] > key) {
+            a[j+1] = a[j];
+            j--;
+        }
+        a[j+1] = key;
+    }
+}
+
+void selectionSort(vector<int>& a) {
+    for (int i = 0; i < a.size(); i++) {
+        int minIdx = i;
+        for (int j = i+1; j < a.size(); j++)
+            if (a[j] < a[minIdx])
+                minIdx = j;
+        swap(a[i], a[minIdx]);
+    }
+}
+
+void gnomeSort(vector<int>& a) {
+    int i = 0;
+    while (i < a.size()) {
+        if (i == 0 || a[i] >= a[i-1])
+            i++;
+        else {
+            swap(a[i], a[i-1]);
+            i--;
+        }
+    }
+}
+
+long long test(void (*sortFunc)(vector<int>&), int n) {
+    vector<int> a(n);
+    for (int i = 0; i < n; i++)
+        a[i] = rand();
+
+    auto start = high_resolution_clock::now();
+    sortFunc(a);
+    auto end = high_resolution_clock::now();
+
+    return duration_cast<milliseconds>(end - start).count();
+}
+
+int main() {
+    int sizes[] = {1000, 10000, 100000};
+
+    cout << "Algorithm\t1000\t10000\t100000\n";
+
+    for (int n : sizes) cout << "--------";
+
+    cout << endl;
+
+    cout << "Bubble\t";
+    for (int n : sizes) cout << test(bubbleSort, n) << "\t";
+
+    cout << "\nInsertion\t";
+    for (int n : sizes) cout << test(insertionSort, n) << "\t";
+
+    cout << "\nSelection\t";
+    for (int n : sizes) cout << test(selectionSort, n) << "\t";
+
+    cout << "\nGnome\t";
+    for (int n : sizes) cout << test(gnomeSort, n) << "\t";
+
+    return 0;
+}
