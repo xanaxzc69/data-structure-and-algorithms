@@ -1,0 +1,154 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+struct Student {
+    string surname;
+    int group;
+    int grades[4];
+    double average;
+};
+
+void calculateAverage(Student& s) {
+    int sum = 0;
+
+    for (int i = 0; i < 4; i++) {
+        sum += s.grades[i];
+    }
+
+    s.average = sum / 4.0;
+}
+
+void printStudents(const vector<Student>& students) {
+    cout << fixed << setprecision(2);
+
+    for (const auto& s : students) {
+        cout << "Surname: " << s.surname
+             << " | Group: " << s.group
+             << " | Grades: ";
+
+        for (int i = 0; i < 4; i++) {
+            cout << s.grades[i] << " ";
+        }
+
+        cout << "| Average: " << s.average << endl;
+    }
+
+    cout << endl;
+}
+
+void bubbleSortByAverage(vector<Student>& students) {
+    int n = students.size();
+
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (students[j].average > students[j + 1].average) {
+                swap(students[j], students[j + 1]);
+            }
+        }
+    }
+}
+
+void insertionSortByGroup(vector<Student>& students) {
+    for (int i = 1; i < students.size(); i++) {
+        Student key = students[i];
+        int j = i - 1;
+
+        while (j >= 0 && students[j].group < key.group) {
+            students[j + 1] = students[j];
+            j--;
+        }
+
+        students[j + 1] = key;
+    }
+}
+
+void binarySearchByAverage(const vector<Student>& students, double target) {
+    int left = 0;
+    int right = students.size() - 1;
+    bool found = false;
+
+    while (left <= right) {
+        int mid = (left + right) / 2;
+
+        if (students[mid].average == target) {
+            found = true;
+
+            int start = mid;
+            int end = mid;
+
+            while (start > 0 && students[start - 1].average == target) {
+                start--;
+            }
+
+            while (end < students.size() - 1 &&
+                   students[end + 1].average == target) {
+                end++;
+            }
+
+            cout << "\nStudents with average " << target << ":\n";
+
+            for (int i = start; i <= end; i++) {
+                cout << students[i].surname
+                     << " | Group: " << students[i].group
+                     << " | Average: " << students[i].average
+                     << endl;
+            }
+
+            break;
+        }
+
+        else if (students[mid].average < target) {
+            left = mid + 1;
+        }
+
+        else {
+            right = mid - 1;
+        }
+    }
+
+    if (!found) {
+        cout << "\nNo students found with average "
+             << target << endl;
+    }
+}
+
+int main() {
+    vector<Student> students = {
+        {"Ivanenko", 101, {90, 85, 88, 92}, 0},
+        {"Petrenko", 102, {75, 80, 70, 78}, 0},
+        {"Shevchenko", 101, {95, 94, 96, 93}, 0},
+        {"Koval", 103, {60, 65, 70, 68}, 0},
+        {"Bondarenko", 102, {88, 84, 86, 90}, 0}
+    };
+
+    for (auto& s : students) {
+        calculateAverage(s);
+    }
+
+    cout << "Original array:\n";
+    printStudents(students);
+
+    bubbleSortByAverage(students);
+
+    cout << "Sorted by average (bubble sort):\n";
+    printStudents(students);
+
+    vector<Student> copyStudents = students;
+
+    insertionSortByGroup(copyStudents);
+
+    cout << "Sorted by group descending (insertion sort):\n";
+    printStudents(copyStudents);
+
+    double target;
+
+    cout << "Enter average score to search: ";
+    cin >> target;
+
+    binarySearchByAverage(students, target);
+
+    return 0;
+}
