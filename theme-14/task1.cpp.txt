@@ -1,0 +1,37 @@
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string text;
+    cout << "Enter a string:\n";
+    getline(cin, text);
+
+    map<char, int> freq;
+
+    for (char c : text) {
+        freq[c]++;
+    }
+
+    cout << "\nCharacter frequencies:\n";
+    for (const auto& p : freq) {
+        cout << "'" << p.first << "' -> " << p.second << endl;
+    }
+
+    char maxChar = 0;
+    int maxCount = 0;
+
+    for (const auto& p : freq) {
+        if (p.second > maxCount) {
+            maxCount = p.second;
+            maxChar = p.first;
+        }
+    }
+
+    cout << "\nMost frequent character: '" << maxChar 
+         << "' (" << maxCount << " times)\n";
+
+    return 0;
+}

@@ -1,0 +1,40 @@
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+int main() {
+    multimap<int, string> words;
+    string w;
+
+    cout << "Enter words (Ctrl+Z to end):\n";
+
+    while (cin >> w) {
+        words.insert({w.length(), w});
+    }
+
+    cout << "\nGrouped words:\n";
+
+    int current = -1;
+    int count = 0;
+
+    for (auto it = words.begin(); it != words.end(); ++it) {
+        if (it->first != current) {
+            if (current != -1)
+                cout << " | count: " << count << "\n";
+
+            current = it->first;
+            count = 0;
+            cout << "\nLength " << current << ": ";
+        }
+
+        cout << it->second << " ";
+        count++;
+    }
+
+    if (current != -1)
+        cout << " | count: " << count << "\n";
+
+    return 0;
+}
