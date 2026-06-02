@@ -1,0 +1,105 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <iomanip>
+
+using namespace std;
+
+struct Student {
+    string surname;
+    int exam1;
+    int exam2;
+    int exam3;
+    double average;
+};
+
+void calculateAverage(Student& s) {
+    s.average = (s.exam1 + s.exam2 + s.exam3) / 3.0;
+}
+
+int main() {
+    vector<Student> students = {
+        {"Ivanenko", 90, 95, 88, 0},
+        {"Petrenko", 75, 80, 78, 0},
+        {"Shevchenko", 90, 95, 88, 0},
+        {"Koval", 60, 70, 65, 0},
+        {"Bondarenko", 85, 82, 89, 0}
+    };
+
+    for (auto& student : students) {
+        calculateAverage(student);
+    }
+
+    double maxAverage = students[0].average;
+
+    for (const auto& student : students) {
+        if (student.average > maxAverage) {
+            maxAverage = student.average;
+        }
+    }
+
+    cout << fixed << setprecision(2);
+
+    cout << "Students with maximum average score:\n";
+    int countMax = 0;
+
+    for (int i = 0; i < students.size(); i++) {
+        if (students[i].average == maxAverage) {
+            cout << "Index: " << i + 1
+                 << ", Surname: " << students[i].surname
+                 << ", Average: " << students[i].average << endl;
+            countMax++;
+        }
+    }
+
+    cout << "Count: " << countMax << "\n\n";
+
+    sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
+        return a.average < b.average;
+    });
+
+    double targetAverage;
+    cout << "Enter average score to search: ";
+    cin >> targetAverage;
+
+    int left = 0;
+    int right = static_cast<int>(students.size()) - 1;
+    bool found = false;
+
+    while (left <= right) {
+        int mid = (left + right) / 2;
+
+        if (students[mid].average == targetAverage) {
+            found = true;
+
+            int start = mid;
+            int end = mid;
+
+            while (start > 0 && students[start - 1].average == targetAverage) {
+                start--;
+            }
+
+            while (end < students.size() - 1 && students[end + 1].average == targetAverage) {
+                end++;
+            }
+
+            cout << "\nStudents with average " << targetAverage << ":\n";
+            for (int i = start; i <= end; i++) {
+                cout << students[i].surname
+                     << " | Average: " << students[i].average << endl;
+            }
+
+            break;
+        } else if (students[mid].average < targetAverage) {
+            left = mid + 1;
+        } else {
+            right = mid - 1;
+        }
+    }
+
+    if (!found) {
+        cout << "No students with this average score found.\n";
+    }
+
+    return 0;
+}

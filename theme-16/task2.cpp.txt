@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <iomanip>
+
+using namespace std;
+
+struct Product {
+    string name;
+    double proteins;
+    double fats;
+    double carbohydrates;
+    double calories;
+};
+
+void calculateCalories(Product& p) {
+    p.calories = 4 * p.proteins + 9 * p.fats + 4 * p.carbohydrates;
+}
+
+int main() {
+    vector<Product> products = {
+        {"Milk", 3.0, 3.2, 4.7, 0},
+        {"Bread", 8.0, 2.5, 49.0, 0},
+        {"Cheese", 25.0, 30.0, 2.0, 0},
+        {"Apple", 0.4, 0.2, 11.8, 0},
+        {"Chicken", 23.0, 1.5, 0.0, 0}
+    };
+
+    for (auto& product : products) {
+        calculateCalories(product);
+    }
+
+    double maxCalories = products[0].calories;
+
+    for (const auto& product : products) {
+        if (product.calories > maxCalories) {
+            maxCalories = product.calories;
+        }
+    }
+
+    cout << fixed << setprecision(2);
+
+    cout << "Products with maximum calories:\n";
+    int countMax = 0;
+
+    for (int i = 0; i < products.size(); i++) {
+        if (products[i].calories == maxCalories) {
+            cout << "Index: " << i + 1
+                 << ", Name: " << products[i].name
+                 << ", Calories: " << products[i].calories << endl;
+            countMax++;
+        }
+    }
+
+    cout << "Count: " << countMax << "\n\n";
+
+    double A, B;
+    cout << "Enter calorie range [A B]: ";
+    cin >> A >> B;
+
+    bool found = false;
+
+    cout << "\nProducts in range [" << A << "; " << B << "]:\n";
+
+    for (const auto& product : products) {
+        if (product.calories >= A && product.calories <= B) {
+            cout << product.name
+                 << " | Proteins: " << product.proteins
+                 << " | Fats: " << product.fats
+                 << " | Carbohydrates: " << product.carbohydrates
+                 << " | Calories: " << product.calories << endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No products found in this calorie range.\n";
+    }
+
+    return 0;
+}
