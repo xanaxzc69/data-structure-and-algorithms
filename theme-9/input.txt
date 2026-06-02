@@ -1,0 +1,5 @@
+101 Laptop 25000
+55 Mouse 500
+200 Monitor 7000
+150 Keyboard 1200
+75 Printer 4500
