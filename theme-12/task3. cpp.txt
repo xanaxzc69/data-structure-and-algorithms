@@ -1,0 +1,325 @@
+#include <iostream>
+#include <deque>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+struct Order {
+    int orderNumber;
+    string clientSurname;
+    string deliveryAddress;
+    double cost;
+    string priority;
+    string orderTime;
+    string status;
+};
+
+void printOrder(const Order& order) {
+    cout << "\nOrder number: " << order.orderNumber
+         << "\nClient surname: " << order.clientSurname
+         << "\nDelivery address: " << order.deliveryAddress
+         << "\nCost: " << order.cost
+         << "\nPriority: " << order.priority
+         << "\nOrder time: " << order.orderTime
+         << "\nStatus: " << order.status << "\n";
+}
+
+Order inputOrder() {
+    Order order;
+    cout << "Enter order number: ";
+    cin >> order.orderNumber;
+    cin.ignore();
+    cout << "Enter client surname: ";
+    getline(cin, order.clientSurname);
+    cout << "Enter delivery address: ";
+    getline(cin, order.deliveryAddress);
+    cout << "Enter cost: ";
+    cin >> order.cost;
+    cin.ignore();
+    cout << "Enter priority (urgent/normal): ";
+    getline(cin, order.priority);
+    cout << "Enter order time: ";
+    getline(cin, order.orderTime);
+    cout << "Enter status: ";
+    getline(cin, order.status);
+    return order;
+}
+
+void showOrders(const deque<Order>& orders) {
+    if (orders.empty()) {
+        cout << "No orders available.\n";
+        return;
+    }
+
+    for (const auto& order : orders) {
+        printOrder(order);
+    }
+}
+
+void addOrder(deque<Order>& orders) {
+    Order order = inputOrder();
+
+    if (order.priority == "urgent") {
+        orders.push_front(order);
+        cout << "Urgent order added to the beginning.\n";
+    } else {
+        orders.push_back(order);
+        cout << "Normal order added to the end.\n";
+    }
+}
+
+void removeCompletedOrCancelled(deque<Order>& orders) {
+    orders.erase(
+        remove_if(orders.begin(), orders.end(), [](const Order& order) {
+            return order.status == "completed" || order.status == "cancelled";
+        }),
+        orders.end()
+    );
+
+    cout << "Completed or cancelled orders removed.\n";
+}
+
+void searchByNumber(const deque<Order>& orders) {
+    int number;
+    cout << "Enter order number: ";
+    cin >> number;
+    cin.ignore();
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.orderNumber == number) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "Order not found.\n";
+    }
+}
+
+void searchByClient(const deque<Order>& orders) {
+    string client;
+    cout << "Enter client surname: ";
+    getline(cin, client);
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.clientSurname == client) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "Orders for this client not found.\n";
+    }
+}
+
+void searchByStatus(const deque<Order>& orders) {
+    string status;
+    cout << "Enter status: ";
+    getline(cin, status);
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.status == status) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "Orders with this status not found.\n";
+    }
+}
+
+void editOrder(deque<Order>& orders) {
+    int number;
+    cout << "Enter order number to edit: ";
+    cin >> number;
+    cin.ignore();
+
+    for (auto& order : orders) {
+        if (order.orderNumber == number) {
+            cout << "Enter new client surname: ";
+            getline(cin, order.clientSurname);
+            cout << "Enter new delivery address: ";
+            getline(cin, order.deliveryAddress);
+            cout << "Enter new cost: ";
+            cin >> order.cost;
+            cin.ignore();
+            cout << "Enter new priority: ";
+            getline(cin, order.priority);
+            cout << "Enter new order time: ";
+            getline(cin, order.orderTime);
+            cout << "Enter new status: ";
+            getline(cin, order.status);
+
+            cout << "Order updated successfully.\n";
+            return;
+        }
+    }
+
+    cout << "Order not found.\n";
+}
+
+void sortByCost(deque<Order>& orders) {
+    sort(orders.begin(), orders.end(), [](const Order& a, const Order& b) {
+        return a.cost < b.cost;
+    });
+    cout << "Orders sorted by cost.\n";
+}
+
+void filterByCostRange(const deque<Order>& orders) {
+    double minCost, maxCost;
+    cout << "Enter minimum cost: ";
+    cin >> minCost;
+    cout << "Enter maximum cost: ";
+    cin >> maxCost;
+    cin.ignore();
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.cost >= minCost && order.cost <= maxCost) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No orders in this cost range.\n";
+    }
+}
+
+void filterByPriority(const deque<Order>& orders) {
+    string priority;
+    cout << "Enter priority: ";
+    getline(cin, priority);
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.priority == priority) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No orders with this priority.\n";
+    }
+}
+
+void filterByStatus(const deque<Order>& orders) {
+    string status;
+    cout << "Enter status: ";
+    getline(cin, status);
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.status == status) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No orders with this status.\n";
+    }
+}
+
+void filterByTimeRange(const deque<Order>& orders) {
+    string startTime, endTime;
+    cout << "Enter start time: ";
+    getline(cin, startTime);
+    cout << "Enter end time: ";
+    getline(cin, endTime);
+
+    bool found = false;
+    for (const auto& order : orders) {
+        if (order.orderTime >= startTime && order.orderTime <= endTime) {
+            printOrder(order);
+            found = true;
+        }
+    }
+
+    if (!found) {
+        cout << "No orders in this time range.\n";
+    }
+}
+
+void printMenu() {
+    cout << "\n--- Delivery Service Menu ---\n";
+    cout << "1. Add order\n";
+    cout << "2. Remove completed/cancelled orders\n";
+    cout << "3. Search by order number\n";
+    cout << "4. Search by client surname\n";
+    cout << "5. Search by status\n";
+    cout << "6. Edit order\n";
+    cout << "7. Sort by cost\n";
+    cout << "8. Filter by cost range\n";
+    cout << "9. Filter by priority\n";
+    cout << "10. Filter by status\n";
+    cout << "11. Filter by time range\n";
+    cout << "12. Show all orders\n";
+    cout << "0. Exit\n";
+    cout << "Choose option: ";
+}
+
+int main() {
+    deque<Order> orders;
+    int choice;
+
+    do {
+        printMenu();
+        cin >> choice;
+        cin.ignore();
+
+        switch (choice) {
+            case 1:
+                addOrder(orders);
+                break;
+            case 2:
+                removeCompletedOrCancelled(orders);
+                break;
+            case 3:
+                searchByNumber(orders);
+                break;
+            case 4:
+                searchByClient(orders);
+                break;
+            case 5:
+                searchByStatus(orders);
+                break;
+            case 6:
+                editOrder(orders);
+                break;
+            case 7:
+                sortByCost(orders);
+                break;
+            case 8:
+                filterByCostRange(orders);
+                break;
+            case 9:
+                filterByPriority(orders);
+                break;
+            case 10:
+                filterByStatus(orders);
+                break;
+            case 11:
+                filterByTimeRange(orders);
+                break;
+            case 12:
+                showOrders(orders);
+                break;
+            case 0:
+                cout << "Program finished.\n";
+                break;
+            default:
+                cout << "Invalid option.\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}

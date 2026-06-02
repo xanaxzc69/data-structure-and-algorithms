@@ -1,0 +1,209 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+struct Book {
+    string title;
+    string genre;
+    double price;
+    int popularity;
+    string arrivalDate;
+    bool soldOut;
+};
+
+void addBook(vector<Book>& books) {
+    Book book;
+    cout << "Enter title: ";
+    getline(cin, book.title);
+    cout << "Enter genre: ";
+    getline(cin, book.genre);
+    cout << "Enter price: ";
+    cin >> book.price;
+    cout << "Enter popularity (1-100): ";
+    cin >> book.popularity;
+    cin.ignore();
+    cout << "Enter arrival date (YYYY-MM-DD): ";
+    getline(cin, book.arrivalDate);
+    cout << "Is sold out? (1 - yes, 0 - no): ";
+    cin >> book.soldOut;
+    cin.ignore();
+
+    books.push_back(book);
+    cout << "Book added successfully.\n";
+}
+
+void removeSoldOutBooks(vector<Book>& books) {
+    books.erase(
+        remove_if(books.begin(), books.end(), [](const Book& b) {
+            return b.soldOut;
+        }),
+        books.end()
+    );
+    cout << "Sold out books removed.\n";
+}
+
+void printBooks(const vector<Book>& books) {
+    if (books.empty()) {
+        cout << "No books available.\n";
+        return;
+    }
+
+    for (const auto& book : books) {
+        cout << "\nTitle: " << book.title
+             << "\nGenre: " << book.genre
+             << "\nPrice: " << book.price
+             << "\nPopularity: " << book.popularity
+             << "\nArrival date: " << book.arrivalDate
+             << "\nSold out: " << (book.soldOut ? "Yes" : "No") << "\n";
+    }
+}
+
+void sortByPrice(vector<Book>& books) {
+    sort(books.begin(), books.end(), [](const Book& a, const Book& b) {
+        return a.price < b.price;
+    });
+    cout << "Books sorted by price.\n";
+}
+
+void sortByPopularity(vector<Book>& books) {
+    sort(books.begin(), books.end(), [](const Book& a, const Book& b) {
+        return a.popularity > b.popularity;
+    });
+    cout << "Books sorted by popularity.\n";
+}
+
+void sortByArrivalDate(vector<Book>& books) {
+    sort(books.begin(), books.end(), [](const Book& a, const Book& b) {
+        return a.arrivalDate < b.arrivalDate;
+    });
+    cout << "Books sorted by arrival date.\n";
+}
+
+void filterByGenre(const vector<Book>& books) {
+    string genre;
+    cout << "Enter genre: ";
+    getline(cin, genre);
+
+    bool found = false;
+    for (const auto& book : books) {
+        if (book.genre == genre) {
+            found = true;
+            cout << book.title << " | " << book.genre << " | " << book.price << endl;
+        }
+    }
+
+    if (!found) {
+        cout << "No books found for this genre.\n";
+    }
+}
+
+void filterByPriceRange(const vector<Book>& books) {
+    double minPrice, maxPrice;
+    cout << "Enter minimum price: ";
+    cin >> minPrice;
+    cout << "Enter maximum price: ";
+    cin >> maxPrice;
+    cin.ignore();
+
+    bool found = false;
+    for (const auto& book : books) {
+        if (book.price >= minPrice && book.price <= maxPrice) {
+            found = true;
+            cout << book.title << " | " << book.genre << " | " << book.price << endl;
+        }
+    }
+
+    if (!found) {
+        cout << "No books found in this price range.\n";
+    }
+}
+
+void searchBook(const vector<Book>& books) {
+    string title;
+    cout << "Enter title to search: ";
+    getline(cin, title);
+
+    bool found = false;
+    for (const auto& book : books) {
+        if (book.title == title) {
+            found = true;
+            cout << "\nBook found:\n";
+            cout << "Title: " << book.title
+                 << "\nGenre: " << book.genre
+                 << "\nPrice: " << book.price
+                 << "\nPopularity: " << book.popularity
+                 << "\nArrival date: " << book.arrivalDate
+                 << "\nSold out: " << (book.soldOut ? "Yes" : "No") << "\n";
+        }
+    }
+
+    if (!found) {
+        cout << "Book not found.\n";
+    }
+}
+
+void printMenu() {
+    cout << "\n--- Book Store Menu ---\n";
+    cout << "1. Add book\n";
+    cout << "2. Remove sold out books\n";
+    cout << "3. Sort by price\n";
+    cout << "4. Sort by popularity\n";
+    cout << "5. Sort by arrival date\n";
+    cout << "6. Filter by genre\n";
+    cout << "7. Filter by price range\n";
+    cout << "8. Search by title\n";
+    cout << "9. Show all books\n";
+    cout << "0. Exit\n";
+    cout << "Choose option: ";
+}
+
+int main() {
+    vector<Book> books;
+    int choice;
+
+    do {
+        printMenu();
+        cin >> choice;
+        cin.ignore();
+
+        switch (choice) {
+            case 1:
+                addBook(books);
+                break;
+            case 2:
+                removeSoldOutBooks(books);
+                break;
+            case 3:
+                sortByPrice(books);
+                break;
+            case 4:
+                sortByPopularity(books);
+                break;
+            case 5:
+                sortByArrivalDate(books);
+                break;
+            case 6:
+                filterByGenre(books);
+                break;
+            case 7:
+                filterByPriceRange(books);
+                break;
+            case 8:
+                searchBook(books);
+                break;
+            case 9:
+                printBooks(books);
+                break;
+            case 0:
+                cout << "Program finished.\n";
+                break;
+            default:
+                cout << "Invalid option.\n";
+        }
+    } while (choice != 0);
+
+    return 0;
+}
