@@ -1,0 +1,66 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct TV {
+    string brand;
+    int size;
+    double price;
+};
+
+void insertionSort(vector<TV>& a) {
+    for (int i = 1; i < a.size(); i++) {
+        TV key = a[i];
+        int j = i - 1;
+
+        while (j >= 0 && a[j].size > key.size) {
+            a[j+1] = a[j];
+            j--;
+        }
+        a[j+1] = key;
+    }
+}
+
+void gnomeSort(vector<TV>& a) {
+    int i = 0;
+    while (i < a.size()) {
+        if (i == 0 || a[i].price <= a[i-1].price)
+            i++;
+        else {
+            swap(a[i], a[i-1]);
+            i--;
+        }
+    }
+}
+
+int main() {
+    vector<TV> tvs = {
+        {"Samsung", 45, 15000},
+        {"LG", 32, 8000},
+        {"Sony", 45, 20000},
+        {"Xiaomi", 32, 7000}
+    };
+
+    insertionSort(tvs);
+
+    // сортування всередині однакового розміру
+    for (int i = 0; i < tvs.size();) {
+        int j = i;
+        while (j < tvs.size() && tvs[j].size == tvs[i].size)
+            j++;
+
+        vector<TV> sub(tvs.begin()+i, tvs.begin()+j);
+        gnomeSort(sub);
+
+        for (int k = 0; k < sub.size(); k++)
+            tvs[i+k] = sub[k];
+
+        i = j;
+    }
+
+    for (auto& t : tvs)
+        cout << t.brand << " " << t.size << " " << t.price << endl;
+
+    return 0;
+}

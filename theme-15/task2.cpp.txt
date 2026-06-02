@@ -1,0 +1,35 @@
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+struct Time {
+    int h, m;
+};
+
+struct Train {
+    int number;
+    string destination;
+    int distance;
+    Time dep, arr;
+    int duration;
+};
+
+int main() {
+    vector<Train> trains = {
+        {1,"Kyiv",500,{10,0},{15,0},300},
+        {2,"Lviv",600,{9,0},{18,0},540},
+        {3,"Odessa",400,{8,0},{12,0},240}
+    };
+
+    Train maxTrain = trains[0];
+
+    for (auto& t : trains)
+        if (t.duration > maxTrain.duration)
+            maxTrain = t;
+
+    cout << "Longest trip:\n";
+    cout << maxTrain.number << " " << maxTrain.destination << endl;
+
+    return 0;
+}
