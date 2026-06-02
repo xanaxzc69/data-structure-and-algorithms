@@ -1,0 +1,42 @@
+#include <iostream>
+#include <map>
+#include <string>
+
+using namespace std;
+
+void updateStudentGrade(map<string, int>& students, const string& name, int newGrade) {
+    students[name] = newGrade;
+}
+
+void printStudents(const map<string, int>& students) {
+    cout << "\nStudents and grades:\n";
+    for (const auto& pair : students) {
+        cout << pair.first << " -> " << pair.second << endl;
+    }
+}
+
+int main() {
+    map<string, int> students = {
+        {"Andrii", 85},
+        {"Olena", 90},
+        {"Maksym", 78}
+    };
+
+    printStudents(students);
+
+    string name;
+    int newGrade;
+
+    cout << "\nEnter student name: ";
+    getline(cin, name);
+
+    cout << "Enter new grade: ";
+    cin >> newGrade;
+
+    updateStudentGrade(students, name, newGrade);
+
+    cout << "\nUpdated data:\n";
+    printStudents(students);
+
+    return 0;
+}
